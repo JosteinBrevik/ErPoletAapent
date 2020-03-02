@@ -1,8 +1,8 @@
 <template>
-  <div v-if="stores.length > 0">
+  <div v-if="stores && stores.length > 0">
     Hello
     <StoreInfo
-      v-for="(store, index) in stores"
+      v-for="(store, index) in storesWithDist"
       :key="index"
       v-bind:store="store"
     />
@@ -13,6 +13,7 @@
 import Vue, { VNode } from 'vue';
 import axios from 'axios';
 import StoreInfo from './StoreInfo.vue';
+import { IStore } from '../types/customTypes';
 
 let config = {
   headers: {
@@ -21,29 +22,43 @@ let config = {
 };
 
 export default Vue.extend({
+  name: 'Answer',
   components: {
     StoreInfo
+  },
+  props: {
+    lat: Number,
+    lng: Number
   },
   data() {
     return {
       msg: 'Hello',
-      stores: []
+      stores: [] as IStore[] | null
     };
   },
   methods: {
-    // need annotation due to `this` in return type
-    greet(): string {
-      return this.msg + ' world';
+    calculateDistance(store: IStore): number {
+      const [storeLat, storeLong] = store.address.gpsCoord
+        .split(';')
+        .map(num => parseFloat(num));
+      const longDist = Math.pow(this.lng - storeLong, 2);
+      const latDist = Math.pow(this.lat - storeLat, 2);
+      console.log(storeLat, storeLong, longDist, latDist);
+      return Math.sqrt(longDist + latDist);
     }
   },
   computed: {
-    // need annotation
-    greeting(): string {
-      return this.greet() + '!';
+    storesWithDist(): IStore[] {
+      if (this.stores === null) {
+        return [];
+      }
+      return this.stores.map(store => {
+        return { ...store, distanceFromUser: this.calculateDistance(store) };
+      });
     }
   },
   mounted() {
-    console.log('answer mounted');
+    console.log('answer mounted. Props:', this.$props);
     axios
       .get('https://apis.vinmonopolet.no/stores/v0/details?', config)
       .then(response => {

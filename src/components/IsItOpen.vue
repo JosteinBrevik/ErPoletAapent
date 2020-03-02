@@ -2,10 +2,10 @@
   <div>
     <h1>Er polet åpent?</h1>
     <div v-if="loaded">
-      <p>{{ this.lat }} {{ this.long }}</p>
+      <p>{{ this.coords.lat }} {{ this.coords.lng }}</p>
+      <Answer v-bind="{ ...this.coords }" />
     </div>
     <div v-if="!loaded">Loading</div>
-    <Answer />
   </div>
 </template>
 
@@ -19,8 +19,10 @@ export default {
   },
   data() {
     return {
-      lat: '',
-      long: '',
+      coords: {
+        lat: '',
+        long: ''
+      },
       loaded: false
     };
   },
@@ -37,10 +39,8 @@ export default {
         const coordinates = await this.$getLocation({
           enableHighAccuracy: true
         });
-        const { lat, lng } = coordinates;
-        console.log('fetched loc: lat', lat, 'long:', lng);
-        this.lat = lat;
-        this.long = lng;
+        this.coords = coordinates;
+        console.log('fetched coords:', coordinates);
         this.loaded = true;
       } catch (error) {
         console.log('failed', error);

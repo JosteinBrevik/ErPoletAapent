@@ -2,6 +2,7 @@
   <div>
     <h2>Butikken din</h2>
     <p>{{ store.storeName }}</p>
+    <p>Distanse: {{ store.distanceFromUser }}</p>
   </div>
 </template>
 
