@@ -1,6 +1,6 @@
 export interface IStore {
-  storeName: String;
-  distanceFromUser?: Number;
+  storeName: string;
+  distanceFromUser: number;
   storeId: string;
   status: string;
   address: {

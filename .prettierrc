@@ -1,0 +1,8 @@
+{
+  "vetur.format.options.tabSize": 2,
+  "vetur.format.options.useTabs": false,
+  "prettyhtml": {
+    "printWidth": 100,
+    "singleQuote": false
+  }
+}
