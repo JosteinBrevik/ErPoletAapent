@@ -22,7 +22,7 @@ let config = {
 };
 
 export default Vue.extend({
-  name: "Answer",
+  name: "StoreManager",
   components: {
     StoreInfo
   },
@@ -68,7 +68,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    console.log("answer mounted. Props:", this.$props);
+    console.log("StoreManager mounted. Props:", this.$props);
     axios
       .get("https://apis.vinmonopolet.no/stores/v0/details?", config)
       .then(response => {
