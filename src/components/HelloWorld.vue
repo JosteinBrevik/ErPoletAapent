@@ -1,16 +1,15 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
     <IsItOpen />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import IsItOpen from './IsItOpen.vue';
+import Vue from "vue";
+import IsItOpen from "./IsItOpen.vue";
 
 export default Vue.extend({
-  name: 'HelloWorld',
+  name: "HelloWorld",
   components: {
     IsItOpen
   },

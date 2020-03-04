@@ -1,19 +1,36 @@
 <template>
   <div v-if="stores && stores.length > 0">
-    Hello
-    <StoreInfo
-      v-for="(store, index) in fiveClosestStores"
-      :key="index"
-      v-bind:store="store"
-    />
+    <Answer v-bind:stores="fiveClosestStores" />
+    <div class="storeDisplay">
+      <div class="column">
+        <h1>Closest stores:</h1>
+        <StoreInfo
+          v-for="(store, index) in fiveClosestStores"
+          :key="index"
+          v-bind:store="store"
+        />
+        <a v-on:click="showMoreStores"> Vis flere </a>
+      </div>
+      <div class="column">
+        <h1>Closest open stores:</h1>
+        <StoreInfo
+          v-for="(store, index) in fiveClosestOpenStores"
+          :key="index"
+          v-bind:store="store"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue, { VNode } from "vue";
 import axios from "axios";
+import { getDistance } from "geolib";
 import StoreInfo from "./StoreInfo.vue";
+import Answer from "./Answer.vue";
 import { IStore } from "../types/customTypes";
+import { storeIsOpen } from "../mixins/locationMixins";
 
 let config = {
   headers: {
@@ -24,7 +41,8 @@ let config = {
 export default Vue.extend({
   name: "StoreManager",
   components: {
-    StoreInfo
+    StoreInfo,
+    Answer
   },
   props: {
     lat: Number,
@@ -33,7 +51,8 @@ export default Vue.extend({
   data() {
     return {
       msg: "Hello",
-      stores: [] as IStore[] | null
+      stores: [] as IStore[] | null,
+      storesToShow: 5
     };
   },
   methods: {
@@ -41,9 +60,13 @@ export default Vue.extend({
       const [storeLat, storeLong] = store.address.gpsCoord
         .split(";")
         .map(num => parseFloat(num));
-      const longDist = Math.pow(this.lng - storeLong, 2);
-      const latDist = Math.pow(this.lat - storeLat, 2);
-      return Math.sqrt(longDist + latDist);
+      const storePos = { latitude: storeLat, longitude: storeLong };
+      const currentPos = { latitude: "60.267963", longitude: "10.566183" }; // Lunner: "60.267963", "10.566183" Current: this.lat, this.lng
+      const distanceToStore = getDistance(storePos, currentPos);
+      return distanceToStore;
+    },
+    showMoreStores() {
+      this.storesToShow += 5;
     }
   },
   computed: {
@@ -55,11 +78,28 @@ export default Vue.extend({
         return { ...store, distanceFromUser: this.calculateDistance(store) };
       });
     },
+    openStores(): IStore[] {
+      if (!this.stores) {
+        return [];
+      }
+      return this.storesWithDist.slice().filter(store => storeIsOpen(store));
+    },
     fiveClosestStores(): IStore[] {
       if (!this.storesWithDist || this.storesWithDist === []) {
         return [];
       }
       return this.storesWithDist
+        .slice()
+        .sort((a, b) => {
+          return a.distanceFromUser - b.distanceFromUser;
+        })
+        .slice(0, this.storesToShow);
+    },
+    fiveClosestOpenStores(): IStore[] {
+      if (!this.openStores || this.openStores === []) {
+        return [];
+      }
+      return this.openStores
         .slice()
         .sort((a, b) => {
           return a.distanceFromUser - b.distanceFromUser;
@@ -73,7 +113,7 @@ export default Vue.extend({
       .get("https://apis.vinmonopolet.no/stores/v0/details?", config)
       .then(response => {
         this.stores = response.data.filter(
-          (store: IStore) => store.status === "Open"
+          (store: IStore) => store.status === "Open" // Filter out stores that are temporarily or permanently shut down
         );
         console.log(response);
       })
@@ -83,3 +123,16 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style scoped>
+.storeDisplay {
+  display: flex;
+  justify-content: space-around;
+}
+
+@media (max-width: 768px) {
+  .storeDisplay {
+    flex-direction: column;
+  }
+}
+</style>

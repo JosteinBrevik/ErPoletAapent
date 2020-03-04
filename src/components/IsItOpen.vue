@@ -2,8 +2,8 @@
   <div>
     <h1>Er polet åpent?</h1>
     <div v-if="loaded">
-      <p>{{ this.coords.lat }} {{ this.coords.lng }}</p>
       <StoreManager v-bind="{ ...this.coords }" />
+      <p>{{ this.coords.lat }} {{ this.coords.lng }}</p>
     </div>
     <div v-if="!loaded">Loading</div>
   </div>

@@ -26,11 +26,11 @@ export const timeIsBetween = (
 ) => {
   const [currentHours, currentMinutes] = timeToNumbers(currentTime);
 
-  console.log("Hours:", currentHours, "Minutes", currentMinutes);
+  // console.log("Hours:", currentHours, "Minutes", currentMinutes);
   const [startHours, startMinutes] = timeToNumbers(startTime);
-  console.log("StartHours:", startHours, "Minutes", startMinutes);
+  // console.log("StartHours:", startHours, "Minutes", startMinutes);
   const [endHours, endMinutes] = timeToNumbers(endTime);
-  console.log("EndHours:", endHours, "Minutes", endMinutes);
+  // console.log("EndHours:", endHours, "Minutes", endMinutes);
 
   if (currentHours > startHours && currentHours < endHours) {
     return true;
@@ -52,6 +52,9 @@ export const getNow = () => {
 export const storeIsOpen = (store: IStore) => {
   const { currentDay, currentTime } = getNow();
   const openingHoursToday = store.openingHours.regularHours[currentDay];
+  if (!openingHoursToday) {
+    return false;
+  }
 
   if (openingHoursToday.closed) {
     return false;
