@@ -68,27 +68,33 @@ export default {
 <style lang="scss">
 .storeInfoContainer {
   padding: 1rem;
-  margin: 2rem 1rem;
+  margin: 3rem 1rem;
   border-radius: 16px;
   background: linear-gradient(145deg, #242424, #1f1f1f);
-  box-shadow: 5px 5px 19px #171717, -5px -5px 19px #2d2d2d;
+
+  // Neumorphism
+  border-radius: 32px;
+  background: #222222;
+  box-shadow: 17px 17px 23px #151515, -17px -17px 23px #2f2f2f;
+
   border-style: solid;
-  border-width: 1px;
+  border-width: 2px;
 
   &.open {
     border-color: #10732a;
   }
   &.closed {
-    border-color: #911b13;
+    border-color: #eeeeee; //#911b13;
   }
 }
 
 .mapsButton {
   padding: 1rem 2rem;
-  background-color: white;
+  background-color: #eeeeee;
   color: black;
   cursor: pointer;
   margin: 2rem;
   border-radius: 1rem;
+  font-weight: 500;
 }
 </style>

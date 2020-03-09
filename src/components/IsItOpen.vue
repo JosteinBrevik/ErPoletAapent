@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h1>Er polet åpent?</h1>
+  <div class="container">
     <div v-if="loaded">
       <StoreManager v-bind="{ ...this.coords }" />
       <p>{{ this.coords.lat }} {{ this.coords.lng }}</p>
@@ -51,4 +50,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.container {
+  padding-top: 5vh;
+  max-width: 100vw;
+}
+</style>

@@ -19,15 +19,14 @@ export default Vue.extend({
 <style>
 body {
   margin: 0 !important;
+  background-color: #222222;
 }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-color: #222222;
   color: #dddddd;
-  padding-top: 60px;
   min-width: 100vw;
   min-height: 100vh;
   margin: 0 !important;

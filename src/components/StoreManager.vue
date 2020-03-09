@@ -1,23 +1,47 @@
 <template>
   <div v-if="stores && stores.length > 0">
-    <Answer v-bind:stores="fiveClosestStores" />
+    <Answer v-bind:stores="closestStores" />
     <div class="storeDisplay">
       <div class="column">
-        <h1>Closest stores:</h1>
+        <h1>Nærmeste Vinmonopol:</h1>
+        <div class="selectorContainer">
+          <div
+            v-on:click="setShowClosedStores(true)"
+            v-bind:class="{ selector: true, selected: showClosedStores }"
+          >
+            Alle butikker
+          </div>
+          <div
+            v-on:click="setShowClosedStores(false)"
+            v-bind:class="{ selector: true, selected: !showClosedStores }"
+          >
+            Åpne butikker
+          </div>
+          <div
+            v-bind:class="{
+              selectionBar: true,
+              left: showClosedStores,
+              right: !showClosedStores
+            }"
+          />
+        </div>
         <StoreInfo
-          v-for="(store, index) in fiveClosestStores"
+          v-for="(store, index) in showClosedStores
+            ? closestStores
+            : closestOpenStores"
           :key="index"
           v-bind:store="store"
         />
-        <a v-on:click="showMoreStores"> Vis flere </a>
-      </div>
-      <div class="column">
-        <h1>Closest open stores:</h1>
-        <StoreInfo
-          v-for="(store, index) in fiveClosestOpenStores"
-          :key="index"
-          v-bind:store="store"
-        />
+        <a
+          v-if="
+            showClosedStores
+              ? closestStores.length > storesToShow
+              : closestOpenStores.length > storesToShow
+          "
+          v-on:click="showMoreStores"
+        >
+          Vis flere
+        </a>
       </div>
     </div>
   </div>
@@ -52,7 +76,8 @@ export default Vue.extend({
     return {
       msg: "Hello",
       stores: [] as IStore[] | null,
-      storesToShow: 5
+      storesToShow: 5,
+      showClosedStores: false
     };
   },
   methods: {
@@ -61,9 +86,12 @@ export default Vue.extend({
         .split(";")
         .map(num => parseFloat(num));
       const storePos = { latitude: storeLat, longitude: storeLong };
-      const currentPos = { latitude: "60.267963", longitude: "10.566183" }; // Lunner: "60.267963", "10.566183" Current: this.lat, this.lng
+      const currentPos = { latitude: this.lat, longitude: this.lng }; // Lunner: "60.267963", "10.566183" Current: this.lat, this.lng
       const distanceToStore = getDistance(storePos, currentPos);
       return distanceToStore;
+    },
+    setShowClosedStores(should: boolean) {
+      this.showClosedStores = should;
     },
     showMoreStores() {
       this.storesToShow += 5;
@@ -84,7 +112,7 @@ export default Vue.extend({
       }
       return this.storesWithDist.slice().filter(store => storeIsOpen(store));
     },
-    fiveClosestStores(): IStore[] {
+    closestStores(): IStore[] {
       if (!this.storesWithDist || this.storesWithDist === []) {
         return [];
       }
@@ -95,16 +123,20 @@ export default Vue.extend({
         })
         .slice(0, this.storesToShow);
     },
-    fiveClosestOpenStores(): IStore[] {
+    closestOpenStores(): IStore[] {
       if (!this.openStores || this.openStores === []) {
         return [];
       }
-      return this.openStores
+      const closestStores = this.openStores
         .slice()
         .sort((a, b) => {
           return a.distanceFromUser - b.distanceFromUser;
         })
-        .slice(0, 5);
+        .slice(0, this.storesToShow);
+      if (closestStores.length === 0) {
+        this.setShowClosedStores(true);
+      }
+      return closestStores;
     }
   },
   mounted() {
@@ -124,10 +156,54 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .storeDisplay {
   display: flex;
   justify-content: space-around;
+}
+
+.column {
+  width: 25rem;
+  min-height: 500px;
+
+  @media (max-width: 738px) {
+    width: 80vw;
+    margin: 0 auto;
+  }
+}
+
+.selectorContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+  border-radius: 2rem;
+  position: relative;
+}
+
+.selector {
+  color: #dddddd;
+  padding: 1rem 2rem;
+  // &.selected {
+  //   border-bottom: 4px solid #911b13;
+  // }
+}
+
+.selectionBar {
+  position: absolute;
+  width: 50%;
+  border: 1px solid white;
+  height: 0px;
+  bottom: 0;
+  transition: left 0.5s;
+  transition-timing-function: ease;
+
+  &.left {
+    left: 0;
+  }
+
+  &.right {
+    left: 50%;
+  }
 }
 
 @media (max-width: 768px) {
