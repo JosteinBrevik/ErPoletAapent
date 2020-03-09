@@ -29,7 +29,6 @@ export default {
       });
     },
     setUserHasScrolled: function() {
-      console.log("Hey");
       this.userHasScrolled = true;
       window.removeEventListener("scroll", this.handleDebouncedScroll);
     }

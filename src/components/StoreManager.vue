@@ -1,49 +1,10 @@
 <template>
   <div v-if="stores && stores.length > 0">
     <Answer v-bind:stores="closestStores" />
-    <div class="storeDisplay">
-      <div class="column">
-        <h1>Nærmeste Vinmonopol:</h1>
-        <div class="selectorContainer">
-          <div
-            v-on:click="setShowClosedStores(true)"
-            v-bind:class="{ selector: true, selected: showClosedStores }"
-          >
-            Alle butikker
-          </div>
-          <div
-            v-on:click="setShowClosedStores(false)"
-            v-bind:class="{ selector: true, selected: !showClosedStores }"
-          >
-            Åpne butikker
-          </div>
-          <div
-            v-bind:class="{
-              selectionBar: true,
-              left: showClosedStores,
-              right: !showClosedStores
-            }"
-          />
-        </div>
-        <StoreInfo
-          v-for="(store, index) in showClosedStores
-            ? closestStores
-            : closestOpenStores"
-          :key="index"
-          v-bind:store="store"
-        />
-        <a
-          v-if="
-            showClosedStores
-              ? closestStores.length > storesToShow
-              : closestOpenStores.length > storesToShow
-          "
-          v-on:click="showMoreStores"
-        >
-          Vis flere
-        </a>
-      </div>
-    </div>
+    <StoreLister
+      v-bind:closestStores="closestStores"
+      v-bind:closestOpenStores="closestOpenStores"
+    />
   </div>
 </template>
 
@@ -53,6 +14,7 @@ import axios from "axios";
 import { getDistance } from "geolib";
 import StoreInfo from "./StoreInfo.vue";
 import Answer from "./Answer.vue";
+import StoreLister from "./StoreLister.vue";
 import { IStore } from "../types/customTypes";
 import { storeIsOpen } from "../mixins/locationMixins";
 
@@ -65,8 +27,8 @@ let config = {
 export default Vue.extend({
   name: "StoreManager",
   components: {
-    StoreInfo,
-    Answer
+    Answer,
+    StoreLister
   },
   props: {
     lat: Number,
@@ -74,10 +36,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      msg: "Hello",
-      stores: [] as IStore[] | null,
-      storesToShow: 5,
-      showClosedStores: false
+      stores: [] as IStore[] | null
     };
   },
   methods: {
@@ -89,12 +48,6 @@ export default Vue.extend({
       const currentPos = { latitude: this.lat, longitude: this.lng }; // Lunner: "60.267963", "10.566183" Current: this.lat, this.lng
       const distanceToStore = getDistance(storePos, currentPos);
       return distanceToStore;
-    },
-    setShowClosedStores(should: boolean) {
-      this.showClosedStores = should;
-    },
-    showMoreStores() {
-      this.storesToShow += 5;
     }
   },
   computed: {
@@ -116,26 +69,17 @@ export default Vue.extend({
       if (!this.storesWithDist || this.storesWithDist === []) {
         return [];
       }
-      return this.storesWithDist
-        .slice()
-        .sort((a, b) => {
-          return a.distanceFromUser - b.distanceFromUser;
-        })
-        .slice(0, this.storesToShow);
+      return this.storesWithDist.slice().sort((a, b) => {
+        return a.distanceFromUser - b.distanceFromUser;
+      });
     },
     closestOpenStores(): IStore[] {
       if (!this.openStores || this.openStores === []) {
         return [];
       }
-      const closestStores = this.openStores
-        .slice()
-        .sort((a, b) => {
-          return a.distanceFromUser - b.distanceFromUser;
-        })
-        .slice(0, this.storesToShow);
-      if (closestStores.length === 0) {
-        this.setShowClosedStores(true);
-      }
+      const closestStores = this.openStores.slice().sort((a, b) => {
+        return a.distanceFromUser - b.distanceFromUser;
+      });
       return closestStores;
     }
   },
@@ -156,59 +100,4 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss" scoped>
-.storeDisplay {
-  display: flex;
-  justify-content: space-around;
-}
-
-.column {
-  width: 25rem;
-  min-height: 500px;
-
-  @media (max-width: 738px) {
-    width: 80vw;
-    margin: 0 auto;
-  }
-}
-
-.selectorContainer {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 3rem;
-  border-radius: 2rem;
-  position: relative;
-}
-
-.selector {
-  color: #dddddd;
-  padding: 1rem 2rem;
-  // &.selected {
-  //   border-bottom: 4px solid #911b13;
-  // }
-}
-
-.selectionBar {
-  position: absolute;
-  width: 50%;
-  border: 1px solid white;
-  height: 0px;
-  bottom: 0;
-  transition: left 0.5s;
-  transition-timing-function: ease;
-
-  &.left {
-    left: 0;
-  }
-
-  &.right {
-    left: 50%;
-  }
-}
-
-@media (max-width: 768px) {
-  .storeDisplay {
-    flex-direction: column;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

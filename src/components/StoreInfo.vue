@@ -37,7 +37,6 @@ export default {
       this.showAllInfo = !this.showAllInfo;
     },
     prettifyDistance: function(distance) {
-      console.log(distance);
       const lessThanAKm = distance < 1000;
       const lessThan10k = distance < 10000;
       const kilometers = lessThan10k
@@ -67,7 +66,7 @@ export default {
 
 <style lang="scss">
 .storeInfoContainer {
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   margin: 3rem 1rem;
   border-radius: 16px;
   background: linear-gradient(145deg, #242424, #1f1f1f);
@@ -84,7 +83,7 @@ export default {
     border-color: #10732a;
   }
   &.closed {
-    border-color: #eeeeee; //#911b13;
+    border-color: #444444; //#911b13;
   }
 }
 
@@ -93,7 +92,7 @@ export default {
   background-color: #eeeeee;
   color: black;
   cursor: pointer;
-  margin: 2rem;
+  margin: 1rem;
   border-radius: 1rem;
   font-weight: 500;
 }
