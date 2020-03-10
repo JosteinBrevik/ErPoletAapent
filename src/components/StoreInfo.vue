@@ -4,11 +4,11 @@
     class="storeInfoContainer"
     v-bind:class="{ open: currentStoreIsOpen, closed: !currentStoreIsOpen }"
   >
-    <h2>
+    <h3>
       {{
         store.storeName + ", " + this.prettifyDistance(store.distanceFromUser)
       }}
-    </h2>
+    </h3>
     <p>{{ store.address.street }}</p>
     <p>Åpen: {{ currentStoreIsOpen ? "Ja!" : "Nei" }}</p>
     <div class="mapsButton" v-on:click.stop="goToMap">

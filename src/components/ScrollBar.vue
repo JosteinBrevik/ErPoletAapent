@@ -1,7 +1,12 @@
 <template>
-  <div id="scrollBar" v-on:click="scroll" @scroll="setUserHasScrolled">
-    <p>Vinmonopol i nærheten</p>
-    <div class="arrow" v-if="!userHasScrolled">
+  <div
+    class="scrollBar"
+    v-on:click="scroll"
+    @scroll="setUserHasScrolled"
+    v-if="!userHasScrolled"
+  >
+    <p>Se butikker i nærheten</p>
+    <div class="arrow">
       <span></span>
       <span></span>
       <span></span>
@@ -21,7 +26,7 @@ export default {
 
   methods: {
     scroll: function() {
-      const element = document.getElementById("scrollBar");
+      const element = document.getElementById("stores");
       const y = element.getBoundingClientRect().top + window.scrollY;
       window.scroll({
         top: y,
@@ -46,24 +51,36 @@ export default {
 };
 </script>
 
-<style>
-#scrollBar {
+<style scoped>
+.scrollBar {
   width: 100%;
   height: 10vh;
   max-height: 10vh;
-  padding: 1rem 0;
+  padding: 0.5rem 0 1.5rem;
 
-  -webkit-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21);
+  /* -webkit-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21);
   -moz-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21);
-  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21);
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21); */
 
-  position: relative;
-  background-color: #333333;
+  position: absolute;
+  bottom: 0;
+  opacity: 0%;
+  animation: fadein 1s linear 3s forwards;
+  /* background-color: #333333; */
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0%;
+  }
+  100% {
+    opacity: 100%;
+  }
 }
 
 .arrow {
   position: absolute;
-  top: 50%;
+  top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -83,6 +100,7 @@ export default {
 .arrow span:nth-child(3) {
   animation-delay: -0.4s;
 }
+
 @keyframes animate {
   0% {
     opacity: 0;

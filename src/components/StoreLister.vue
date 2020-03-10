@@ -1,5 +1,5 @@
 <template>
-  <div class="storeDisplay">
+  <div class="storeDisplay" id="stores">
     <div class="column">
       <h1>Nærmeste Vinmonopol:</h1>
       <div class="selectorContainer">

@@ -4,17 +4,19 @@
       <StoreManager v-bind="{ ...this.coords }" />
       <p>{{ this.coords.lat }} {{ this.coords.lng }}</p>
     </div>
-    <div v-if="!loaded">Loading</div>
+    <Loader v-if="!loaded" />
   </div>
 </template>
 
 <script>
 import StoreManager from "./StoreManager.vue";
+import Loader from "./Loader.vue";
 import { getLocation } from "vue-browser-geolocation";
 export default {
   name: "IsItOpen",
   components: {
-    StoreManager
+    StoreManager,
+    Loader
   },
   data() {
     return {
@@ -52,7 +54,6 @@ export default {
 
 <style scoped>
 .container {
-  padding-top: 5vh;
   max-width: 100vw;
 }
 </style>

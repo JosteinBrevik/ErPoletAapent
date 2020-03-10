@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class="answer">
       <h1>Er polet åpent?</h1>
       <div class="answerText">
         {{ closestStoreIsOpen ? "Ja!" : anotherStoreIsOpen ? "Joa" : "Nei" }}
@@ -17,8 +17,8 @@
       <div v-if="closestStoreIsOpen">
         <StoreInfo v-bind:store="allOpenStores[0]" />
       </div>
+      <ScrollBar />
     </div>
-    <ScrollBar />
   </div>
 </template>
 
@@ -57,8 +57,14 @@ export default {
 </script>
 
 <style lang="scss">
-.container {
-  height: 75vh;
+$topPadding: 20vh;
+.answer {
+  height: calc(100vh - #{$topPadding});
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: $topPadding;
   font-family: "Courier New", Courier, monospace;
 }
 .answerText {
