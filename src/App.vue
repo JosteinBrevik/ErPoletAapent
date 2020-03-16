@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <IsItOpen />
+    <StoreManager />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import IsItOpen from "./components/IsItOpen.vue";
+import StoreManager from "./components/StoreManager.vue";
 
 export default Vue.extend({
   name: "app",
   components: {
-    IsItOpen
+    StoreManager
   }
 });
 </script>
@@ -26,9 +26,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #dddddd;
+  color: #cccccc;
   min-width: 100vw;
   min-height: 100vh;
   margin: 0 !important;
+  background: linear-gradient(145d, #424242, #242424);
 }
 </style>

@@ -1,10 +1,13 @@
 <template>
-  <div v-if="stores && stores.length > 0">
+  <div v-if="!loadingCoords && !loadingStores">
     <Answer v-bind:stores="closestStores" />
     <StoreLister
       v-bind:closestStores="closestStores"
       v-bind:closestOpenStores="closestOpenStores"
     />
+  </div>
+  <div v-else>
+    <Loader />
   </div>
 </template>
 
@@ -15,8 +18,10 @@ import { getDistance } from "geolib";
 import StoreInfo from "./StoreInfo.vue";
 import Answer from "./Answer.vue";
 import StoreLister from "./StoreLister.vue";
+import Loader from "./Loader.vue";
 import { IStore } from "../types/customTypes";
 import { storeIsOpen } from "../mixins/locationMixins";
+import { getLocation } from "vue-browser-geolocation";
 
 let config = {
   headers: {
@@ -28,15 +33,18 @@ export default Vue.extend({
   name: "StoreManager",
   components: {
     Answer,
-    StoreLister
-  },
-  props: {
-    lat: Number,
-    lng: Number
+    StoreLister,
+    Loader
   },
   data() {
     return {
-      stores: [] as IStore[] | null
+      stores: [] as IStore[] | null,
+      loadingCoords: true,
+      loadingStores: true,
+      coords: {
+        lat: "",
+        long: ""
+      }
     };
   },
   methods: {
@@ -45,9 +53,39 @@ export default Vue.extend({
         .split(";")
         .map(num => parseFloat(num));
       const storePos = { latitude: storeLat, longitude: storeLong };
-      const currentPos = { latitude: this.lat, longitude: this.lng }; // Lunner: "60.267963", "10.566183" Current: this.lat, this.lng
+      const currentPos = { latitude: "60.267963", longitude: "10.566183" }; // Lunner: { latitude: "60.267963", longitude: "10.566183" } Current: this.lat, this.lng
       const distanceToStore = getDistance(storePos, currentPos);
       return distanceToStore;
+    },
+    async getCurrentLocation() {
+      console.log("trying to fetch loc");
+      try {
+        const coordinates = await this.$getLocation({
+          enableHighAccuracy: true
+        });
+        this.coords = coordinates;
+        console.log("Fetched coords:", coordinates);
+        this.loadingCoords = false;
+      } catch (error) {
+        console.log("failed", error);
+      }
+    },
+    async fetchStores() {
+      console.log("fetching stores");
+      axios
+        .get("https://apis.vinmonopolet.no/stores/v0/details?", config)
+        .then(response => {
+          this.stores = response.data
+            .filter(
+              (store: IStore) => store.status === "Open" // Filter out stores that are temporarily or permanently shut down
+            )
+            .slice(10);
+          console.log("Fetched stores", response);
+          this.loadingStores = false;
+        })
+        .catch(error => {
+          console.log("ERRRR", error);
+        });
     }
   },
   computed: {
@@ -83,19 +121,12 @@ export default Vue.extend({
       return closestStores;
     }
   },
+  beforeMount() {
+    this.getCurrentLocation();
+    this.fetchStores();
+  },
   mounted() {
     console.log("StoreManager mounted. Props:", this.$props);
-    axios
-      .get("https://apis.vinmonopolet.no/stores/v0/details?", config)
-      .then(response => {
-        this.stores = response.data.filter(
-          (store: IStore) => store.status === "Open" // Filter out stores that are temporarily or permanently shut down
-        );
-        console.log(response);
-      })
-      .catch(error => {
-        console.log("ERRRR", error);
-      });
   }
 });
 </script>
