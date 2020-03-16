@@ -10,11 +10,11 @@
           closestStoreIsOpen
             ? "Det nærmeste vinmonopolet er åpent, din heldiggris"
             : anotherStoreIsOpen
-            ? "Men det kan hende du må gå litt. Det nærmeste polet er nemlig stengt, men andre er åpne"
+            ? "Det nærmeste polet er stengt, men andre er åpne. Den nærmeste er denne"
             : "Sorry :("
         }}
       </p>
-      <div v-if="closestStoreIsOpen">
+      <div v-if="closestStoreIsOpen || anotherStoreIsOpen">
         <StoreInfo v-bind:store="allOpenStores[0]" />
       </div>
       <ScrollBar />
@@ -57,20 +57,21 @@ export default {
 </script>
 
 <style lang="scss">
-$topPadding: 20vh;
+$topPadding: 5vh;
 .answer {
   height: calc(100vh - #{$topPadding});
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  margin-top: $topPadding;
+  justify-content: center;
   font-family: "Courier New", Courier, monospace;
+  padding: $topPadding 0 0;
 }
 .answerText {
-  font-size: 12rem;
+  font-size: 8rem;
 }
 .subText {
-  font-size: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.4rem;
 }
 </style>

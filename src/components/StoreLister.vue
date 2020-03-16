@@ -7,13 +7,13 @@
           v-on:click="setShowClosedStores(true)"
           v-bind:class="{ selector: true, selected: showClosedStores }"
         >
-          Alle butikker
+          Alle butikker {{ $props.closestStores.length }}
         </div>
         <div
           v-on:click="setShowClosedStores(false)"
           v-bind:class="{ selector: true, selected: !showClosedStores }"
         >
-          Åpne butikker
+          Åpne butikker {{ $props.closestOpenStores.length }}
         </div>
         <div
           v-bind:class="{
@@ -97,7 +97,7 @@ export default Vue.extend({
 
 .column {
   width: 25rem;
-  min-height: 500px;
+  min-height: 100vh;
   margin: 0 auto;
 
   @media (max-width: 738px) {
@@ -115,7 +115,7 @@ export default Vue.extend({
 
 .selector {
   color: #dddddd;
-  padding: 1rem 2rem;
+  padding: 1rem 1rem;
 }
 
 .selectionBar {

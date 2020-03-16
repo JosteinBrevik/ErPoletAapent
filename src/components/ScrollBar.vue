@@ -53,10 +53,11 @@ export default {
 
 <style scoped>
 .scrollBar {
-  width: 100%;
+  width: 99%;
   height: 10vh;
   max-height: 10vh;
   padding: 0.5rem 0 1.5rem;
+  cursor: pointer;
 
   /* -webkit-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21);
   -moz-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21);

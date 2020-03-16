@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// "./assets/glass-with-wine_REPLACE.svg/"
 export default {
   name: "Loader",
   data() {
