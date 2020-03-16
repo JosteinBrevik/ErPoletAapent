@@ -1,26 +1,27 @@
 import { IStore } from "../types/customTypes";
 
-// export const coordinatesToKms((coordDist: number) => {
-//   var R = 6371e3; // metres
-//   var φ1 = lat1.toRadians();
-//   var φ2 = lat2.toRadians();
-//   var Δφ = (lat2-lat1).toRadians();
-//   var Δλ = (lon2-lon1).toRadians();
-
-//   var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-//           Math.cos(φ1) * Math.cos(φ2) *
-//           Math.sin(Δλ/2) * Math.sin(Δλ/2);
-//   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-//   var d = R * c;
-// })
+enum Ukedager {
+  "mandag",
+  "tirsdag",
+  "onsdag",
+  "torsdag",
+  "fredag",
+  "lørdag",
+  "søndag"
+}
 
 const timeToNumbers = (time: string) => {
   return time.split(":").map(num => Number(num));
 };
 
 const timeToMinutes = (time: string) => {
+  if (!time) {
+    return;
+  }
   const [hours, minutes] = time.split(":");
+  if (!hours || !minutes) {
+    return;
+  }
   return Number(hours) * 60 + Number(minutes);
 };
 
@@ -32,6 +33,9 @@ export const timeIsBetween = (
   const currentMinutes = timeToMinutes(currentTime);
   const startMinutes = timeToMinutes(startTime);
   const endMinutes = timeToMinutes(endTime);
+  if (!currentMinutes || !startMinutes || !endMinutes) {
+    return false;
+  }
   return currentMinutes > startMinutes && currentMinutes < endMinutes;
 };
 
@@ -44,6 +48,21 @@ export const getNow = () => {
 
 export const closingTimeToday = (store: IStore) => {
   const today = new Date().getDay();
+  return store.openingHours.regularHours[today].closingTime;
+};
+
+export const nextOpeningTime = (store: IStore) => {
+  const today = new Date().getDay();
+  for (let i = 1; i < 7; i++) {
+    const openingHours = store.openingHours.regularHours[i];
+    if (openingHours.closed) {
+      continue;
+    }
+    const openingTime = timeToMinutes(openingHours.openingTime);
+    if (openingTime && openingTime > 0) {
+      return Ukedager[i] + " " + openingHours.openingTime;
+    }
+  }
   return store.openingHours.regularHours[today];
 };
 

@@ -1,7 +1,7 @@
 <template>
   <div class="storeDisplay" id="stores">
     <div class="column">
-      <h1>Nærmeste Vinmonopol:</h1>
+      <h2>Nærmeste Vinmonopol:</h2>
       <div class="selectorContainer">
         <div
           v-on:click="setShowClosedStores(true)"
@@ -32,9 +32,10 @@
         v-if="
           showClosedStores
             ? closestStores.length > numberOfStores
-            : closestOpenStores > numberOfStores
+            : closestOpenStores.length > numberOfStores
         "
         v-on:click="showMoreStores"
+        class="showMoreButton"
       >
         Vis flere
       </a>
@@ -67,7 +68,7 @@ export default Vue.extend({
       const stores = this.showClosedStores
         ? this.$props.closestStores
         : this.$props.closestOpenStores;
-      return stores.slice(0, this.numberOfStores);
+      return stores.slice(0, Math.min(stores.length, this.numberOfStores));
     }
   },
   methods: {
@@ -134,6 +135,17 @@ export default Vue.extend({
   &.right {
     left: 50%;
   }
+}
+
+.showMoreButton {
+  padding: 2rem 0;
+  height: 3rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+h1 {
+  //letter-spacing: 1px;
 }
 
 @media (max-width: 768px) {

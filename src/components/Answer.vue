@@ -3,19 +3,22 @@
     <div class="answer">
       <h1>Er polet åpent?</h1>
       <div class="answerText">
-        {{ closestStoreIsOpen ? "Ja!" : anotherStoreIsOpen ? "Joa" : "Nei" }}
+        {{ closestStoreIsOpen ? "Ja" : anotherStoreIsOpen ? "Joa" : "Nei" }}
       </div>
       <p class="subText">
         {{
           closestStoreIsOpen
             ? "Det nærmeste vinmonopolet er åpent, din heldiggris"
             : anotherStoreIsOpen
-            ? "Det nærmeste polet er stengt, men andre er åpne. Den nærmeste er denne"
-            : "Sorry :("
+            ? "Det nærmeste polet er stengt, men andre er åpne. Den nærmeste er denne:"
+            : "Men her har du litt info om når det nærmeste polet ditt åpner:"
         }}
       </p>
       <div v-if="closestStoreIsOpen || anotherStoreIsOpen">
         <StoreInfo v-bind:store="allOpenStores[0]" />
+      </div>
+      <div v-else>
+        <StoreInfo v-bind:store="stores[0]" />
       </div>
       <ScrollBar />
     </div>
@@ -64,14 +67,26 @@ $topPadding: 5vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  font-family: "Courier New", Courier, monospace;
   padding: $topPadding 0 0;
+  max-width: 650px;
+  margin: 0 auto;
+
+  @media (max-width: 738px) {
+    width: 80%;
+  }
 }
 .answerText {
+  color: #eee;
+  font-family: "Courier New", Courier, monospace;
   font-size: 8rem;
 }
 .subText {
   font-size: 1rem;
   line-height: 1.4rem;
+}
+
+h1 {
+  margin-top: 0;
+  letter-spacing: 1px;
 }
 </style>

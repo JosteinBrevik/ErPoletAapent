@@ -17,5 +17,6 @@ export default {
 .marker {
   height: 20px;
   fill: currentColor;
+  margin-right: 0.5rem;
 }
 </style>

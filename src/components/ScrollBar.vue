@@ -57,6 +57,7 @@ export default {
   height: 10vh;
   max-height: 10vh;
   padding: 0.5rem 0 1.5rem;
+  color: #aaa;
   cursor: pointer;
 
   /* -webkit-box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.21);
@@ -108,14 +109,14 @@ export default {
   }
   50% {
     opacity: 0;
-    transform: rotate(45deg) translate(-10px, -10px);
+    transform: rotate(45deg) translate(-5px, -5px);
   }
   75% {
     opacity: 0.5;
   }
   100% {
     opacity: 0;
-    transform: rotate(45deg) translate(10px, 10px);
+    transform: rotate(45deg) translate(5px, 5px);
   }
 }
 </style>

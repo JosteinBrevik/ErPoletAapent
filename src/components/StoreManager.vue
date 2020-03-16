@@ -21,7 +21,6 @@ import StoreLister from "./StoreLister.vue";
 import Loader from "./Loader.vue";
 import { IStore } from "../types/customTypes";
 import { storeIsOpen } from "../mixins/locationMixins";
-import { getLocation } from "vue-browser-geolocation";
 
 let config = {
   headers: {
@@ -43,7 +42,7 @@ export default Vue.extend({
       loadingStores: true,
       coords: {
         lat: "",
-        long: ""
+        lng: ""
       }
     };
   },
@@ -53,7 +52,10 @@ export default Vue.extend({
         .split(";")
         .map(num => parseFloat(num));
       const storePos = { latitude: storeLat, longitude: storeLong };
-      const currentPos = { latitude: "60.267963", longitude: "10.566183" }; // Lunner: { latitude: "60.267963", longitude: "10.566183" } Current: this.lat, this.lng
+      const currentPos = {
+        latitude: this.coords.lat,
+        longitude: this.coords.lng
+      }; // Lunner: { latitude: "60.267963", longitude: "10.566183" } Current: { latitude: this.coords.lat, longitude: this.coords.long }
       const distanceToStore = getDistance(storePos, currentPos);
       return distanceToStore;
     },

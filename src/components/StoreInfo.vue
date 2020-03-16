@@ -4,24 +4,23 @@
     class="storeInfoContainer"
     v-bind:class="{ open: currentStoreIsOpen, closed: !currentStoreIsOpen }"
   >
+    <h3>
+      {{
+        this.storeDisplayName +
+          " - " +
+          this.prettifyDistance(store.distanceFromUser)
+      }}
+    </h3>
     <div class="text">
       <div>
-        <h3>
-          {{
-            store.storeName +
-              ", " +
-              this.prettifyDistance(store.distanceFromUser)
-          }}
-        </h3>
         <p>{{ store.address.street }}</p>
       </div>
 
-      <p v-if="currentStoreIsOpen">Stenger {{ getStoreClosingTime }}</p>
-      <p v-else>Stengt</p>
-
-      <!-- <p>Åpen: {{ currentStoreIsOpen ? "Ja!" : "Nei" }}</p> -->
-      <div v-if="this.showAllInfo">
-        <p>Alt: {{ store }}</p>
+      <div v-if="currentStoreIsOpen" class="rightColText">
+        <p>Stenger {{ getStoreClosingTime }}</p>
+      </div>
+      <div v-else class="rightColText">
+        <p>Åpner {{ getNextOpeningTime }}</p>
       </div>
     </div>
 
@@ -29,12 +28,20 @@
       <MapMarker />
       Åpne i kart
     </div>
+
+    <div v-if="this.showAllInfo">
+      <p>Alt: {{ store }}</p>
+    </div>
   </div>
 </template>
 
 <script>
 import { IStore } from "../types/customTypes";
-import { storeIsOpen, closingTimeToday } from "../mixins/locationMixins";
+import {
+  storeIsOpen,
+  closingTimeToday,
+  nextOpeningTime
+} from "../mixins/locationMixins";
 import MapMarker from "../assets/MapMarker.vue";
 
 export default {
@@ -53,6 +60,10 @@ export default {
     toggleAllInfo: function() {
       this.showAllInfo = !this.showAllInfo;
     },
+    filterStoreName: function(storeName) {
+      const splitName = storeName.includes(",");
+      return splitName ? storeName.split(",")[1].slice(1) : storeName;
+    },
     prettifyDistance: function(distance) {
       const lessThanAKm = distance < 1000;
       const lessThan10k = distance < 10000;
@@ -64,8 +75,7 @@ export default {
     },
     goToMap: function() {
       const { storeName } = this.$props.store;
-      const splitName = storeName.includes(",");
-      const location = splitName ? storeName.split(",")[1].slice(1) : storeName;
+      const location = this.filterStoreName(storeName);
       window.open(
         // "https://www.google.com/maps/place/" +
         //   this.$props.store.address.gpsCoord.split(";").join(",")
@@ -79,6 +89,13 @@ export default {
     },
     currentStoreIsOpen() {
       return storeIsOpen(this.$props.store);
+    },
+    getNextOpeningTime() {
+      return nextOpeningTime(this.$props.store);
+    },
+    storeDisplayName() {
+      const store = this.$props.store;
+      return this.filterStoreName(store.storeName);
     }
   }
 };
@@ -86,14 +103,16 @@ export default {
 
 <style lang="scss" scoped>
 .storeInfoContainer {
-  padding: 1rem 1.5rem;
-  margin: 3rem 0;
+  padding: 1.5rem 1.5rem;
+  margin: 3rem auto;
   border-radius: 16px;
+  max-width: 400px;
   background: linear-gradient(145deg, #242424, #1f1f1f);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  //align-items: center;
+  text-align: left;
 
   // Neumorphism
   border-radius: 32px;
@@ -117,14 +136,22 @@ p {
 
 h3 {
   margin: 5px 0;
+  letter-spacing: 1px;
+  color: #eee;
 }
 
 .text {
-  text-align: left;
   display: flex;
   width: 100%;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
+  color: #aaa;
+}
+
+.rightColText {
+  text-align: right;
+  font-weight: 500;
+  margin-left: 0.7rem;
 }
 
 .mapContainer {
@@ -140,5 +167,9 @@ h3 {
   padding: 0.5rem 0;
   color: #222;
   font-weight: 600;
+
+  &:hover {
+    box-shadow: 0px 0px 7px rgba(200, 200, 200, 0.5);
+  }
 }
 </style>
