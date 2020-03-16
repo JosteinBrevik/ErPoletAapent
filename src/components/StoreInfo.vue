@@ -40,7 +40,8 @@ import { IStore } from "../types/customTypes";
 import {
   storeIsOpen,
   closingTimeToday,
-  nextOpeningTime
+  nextOpeningTime,
+  filterStoreName
 } from "../mixins/locationMixins";
 import MapMarker from "../assets/MapMarker.vue";
 
@@ -60,10 +61,6 @@ export default {
     toggleAllInfo: function() {
       this.showAllInfo = !this.showAllInfo;
     },
-    filterStoreName: function(storeName) {
-      const splitName = storeName.includes(",");
-      return splitName ? storeName.split(",")[1].slice(1) : storeName;
-    },
     prettifyDistance: function(distance) {
       const lessThanAKm = distance < 1000;
       const lessThan10k = distance < 10000;
@@ -75,7 +72,7 @@ export default {
     },
     goToMap: function() {
       const { storeName } = this.$props.store;
-      const location = this.filterStoreName(storeName);
+      const location = filterStoreName(storeName);
       window.open(
         // "https://www.google.com/maps/place/" +
         //   this.$props.store.address.gpsCoord.split(";").join(",")
@@ -95,7 +92,7 @@ export default {
     },
     storeDisplayName() {
       const store = this.$props.store;
-      return this.filterStoreName(store.storeName);
+      return filterStoreName(store.storeName);
     }
   }
 };
@@ -117,16 +114,16 @@ export default {
   // Neumorphism
   border-radius: 32px;
   background: #222222;
-  box-shadow: 17px 17px 23px #151515, -17px -17px 23px #2f2f2f;
+  box-shadow: 9px 9px 36px #141414, -9px -9px 36px #303030;
 
   border-style: solid;
   border-width: 2px;
 
   &.open {
-    border-color: #10732a;
+    border-color: rgba(0, 148, 25, 0.5);
   }
   &.closed {
-    border-color: #444444; //#911b13;
+    border-color: rgba(68, 68, 68, 0.5); //#911b13;
   }
 }
 

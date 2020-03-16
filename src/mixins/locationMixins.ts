@@ -60,7 +60,9 @@ export const nextOpeningTime = (store: IStore) => {
     }
     const openingTime = timeToMinutes(openingHours.openingTime);
     if (openingTime && openingTime > 0) {
-      return Ukedager[i] + " " + openingHours.openingTime;
+      return (
+        (i === 1 ? "i morgen" : Ukedager[i]) + " " + openingHours.openingTime
+      );
     }
   }
   return store.openingHours.regularHours[today];
@@ -83,4 +85,9 @@ export const storeIsOpen = (store: IStore) => {
     openingHoursToday.openingTime,
     openingHoursToday.closingTime
   );
+};
+
+export const filterStoreName = (storeName: string) => {
+  const splitName = storeName.includes(",");
+  return splitName ? storeName.split(",")[1].slice(1) : storeName;
 };

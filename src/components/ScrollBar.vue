@@ -44,8 +44,6 @@ export default {
   },
 
   beforeDestroy() {
-    // I switched the example from `destroyed` to `beforeDestroy`
-    // to exercise your mind a bit. This lifecycle method works too.
     window.removeEventListener("scroll", this.handleDebouncedScroll);
   }
 };

@@ -144,8 +144,8 @@ export default Vue.extend({
   cursor: pointer;
 }
 
-h1 {
-  //letter-spacing: 1px;
+h2 {
+  color: #eee;
 }
 
 @media (max-width: 768px) {

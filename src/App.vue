@@ -30,6 +30,6 @@ body {
   min-width: 100vw;
   min-height: 100vh;
   margin: 0 !important;
-  background: linear-gradient(145d, #424242, #242424);
+  background: #222;
 }
 </style>
