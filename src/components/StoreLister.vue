@@ -80,11 +80,6 @@ export default Vue.extend({
     }
   },
   mounted() {
-    console.log(
-      "numberOfStores",
-      this.numberOfStores,
-      typeof this.numberOfStores
-    );
     this.setShowClosedStores(this.$props.closestOpenStores.length === 0);
   }
 });
