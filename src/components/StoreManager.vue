@@ -60,20 +60,20 @@ export default Vue.extend({
       return distanceToStore;
     },
     async getCurrentLocation() {
-      console.log("trying to fetch loc");
+      //console.log("trying to fetch loc");
       try {
         const coordinates = await this.$getLocation({
           enableHighAccuracy: true
         });
         this.coords = coordinates;
-        console.log("Fetched coords:", coordinates);
+        //console.log("Fetched coords:", coordinates);
         this.loadingCoords = false;
       } catch (error) {
-        console.log("failed", error);
+        //console.log("failed", error);
       }
     },
     async fetchStores() {
-      console.log("fetching stores");
+      //console.log("fetching stores");
       axios
         .get("https://apis.vinmonopolet.no/stores/v0/details?", config)
         .then(response => {
@@ -82,11 +82,11 @@ export default Vue.extend({
               (store: IStore) => store.status === "Open" // Filter out stores that are temporarily or permanently shut down
             )
             .slice(10);
-          console.log("Fetched stores", response);
+          //console.log("Fetched stores", response);
           this.loadingStores = false;
         })
         .catch(error => {
-          console.log("ERRRR", error);
+          //console.log("ERRRR", error);
         });
     }
   },
@@ -128,7 +128,7 @@ export default Vue.extend({
     this.fetchStores();
   },
   mounted() {
-    console.log("StoreManager mounted. Props:", this.$props);
+    //console.log("StoreManager mounted. Props:", this.$props);
   }
 });
 </script>
