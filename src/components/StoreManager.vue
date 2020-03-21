@@ -22,13 +22,6 @@ import Loader from "./Loader.vue";
 import { IStore } from "../types/customTypes";
 import { storeIsOpen } from "../mixins/locationMixins";
 
-let config = {
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Ocp-Apim-Subscription-Key": "20c2a4adf74b4864af469d77d04f21f4"
-  }
-};
-
 export default Vue.extend({
   name: "StoreManager",
   components: {
@@ -76,7 +69,7 @@ export default Vue.extend({
     async fetchStores() {
       //console.log("fetching stores");
       axios
-        .get("https://apis.vinmonopolet.no/stores/v0/details?", config)
+        .get("/api/stores")
         .then(response => {
           this.stores = response.data
             .filter(
