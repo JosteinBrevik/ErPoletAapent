@@ -53,15 +53,18 @@ export const closingTimeToday = (store: IStore) => {
 
 export const nextOpeningTime = (store: IStore) => {
   const today = new Date().getDay();
-  for (let i = 1; i < 7; i++) {
-    const openingHours = store.openingHours.regularHours[i];
+  for (let i = 0; i < 6; i++) {
+    const checkingDay = (i + today) % 7;
+    const openingHours = store.openingHours.regularHours[checkingDay];
     if (openingHours.closed) {
       continue;
     }
     const openingTime = timeToMinutes(openingHours.openingTime);
     if (openingTime && openingTime > 0) {
       return (
-        (i === 1 ? "i morgen" : Ukedager[i]) + " " + openingHours.openingTime
+        (i === 0 ? "i morgen" : Ukedager[checkingDay]) +
+        " " +
+        openingHours.openingTime
       );
     }
   }

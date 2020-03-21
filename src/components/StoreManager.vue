@@ -24,6 +24,7 @@ import { storeIsOpen } from "../mixins/locationMixins";
 
 let config = {
   headers: {
+    "Access-Control-Allow-Origin": "*",
     "Ocp-Apim-Subscription-Key": "20c2a4adf74b4864af469d77d04f21f4"
   }
 };
@@ -62,14 +63,14 @@ export default Vue.extend({
     async getCurrentLocation() {
       //console.log("trying to fetch loc");
       try {
-        const coordinates = await this.$getLocation({
+        const coordinates = await (this as any).$getLocation({
           enableHighAccuracy: true
         });
         this.coords = coordinates;
         //console.log("Fetched coords:", coordinates);
         this.loadingCoords = false;
       } catch (error) {
-        //console.log("failed", error);
+        //.log("failed", error);
       }
     },
     async fetchStores() {
