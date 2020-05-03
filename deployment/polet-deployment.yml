@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polet
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: polet
+  template:
+    metadata:
+      labels:
+        app: polet
+    spec:
+      containers:
+        - name: polet
+          image: santiario/er-polet-aapent:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ER_POLET_AAPENT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: polet-secret
+                  key: apiKey

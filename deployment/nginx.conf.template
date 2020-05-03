@@ -1,0 +1,15 @@
+server {
+    server_name erpoletåpent.no www.erpoletåpent.no xn--erpoletpent-38a.no www.xn--erpoletpent-38a.no;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {}
+    location /api/stores {
+            proxy_set_header "Ocp-Apim-Subscription-Key" ${ER_POLET_AAPENT_API_KEY};
+            proxy_pass https://apis.vinmonopolet.no/stores/v0/details;
+    }
+
+    listen 8080;
+    listen [::]:8080;
+}
