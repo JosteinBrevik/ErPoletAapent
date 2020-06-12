@@ -5,13 +5,17 @@
       <div class="selectorContainer">
         <div
           v-on:click="setShowClosedStores(true)"
+          v-on:keyup.enter="setShowClosedStores(true)"
           v-bind:class="{ selector: true, selected: showClosedStores }"
+          tabIndex="0"
         >
           Alle butikker {{ $props.closestStores.length }}
         </div>
         <div
           v-on:click="setShowClosedStores(false)"
+          v-on:keyup.enter="setShowClosedStores(false)"
           v-bind:class="{ selector: true, selected: !showClosedStores }"
+          tabIndex="0"
         >
           Åpne butikker {{ $props.closestOpenStores.length }}
         </div>
@@ -35,7 +39,9 @@
             : closestOpenStores.length > numberOfStores
         "
         v-on:click="showMoreStores"
+        v-on:keyup.enter="showMoreStores"
         class="showMoreButton"
+        tabIndex="0"
       >
         Vis flere
       </a>

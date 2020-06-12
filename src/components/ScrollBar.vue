@@ -2,8 +2,10 @@
   <div
     class="scrollBar"
     v-on:click="scroll"
+    v-on:keyup.enter="scroll"
     @scroll="setUserHasScrolled"
     v-if="!userHasScrolled"
+    tabIndex="0"
   >
     <p>Se butikker i nærheten</p>
     <div class="arrow">
@@ -74,7 +76,7 @@ export default {
     opacity: 0%;
   }
   100% {
-    opacity: 100%;
+    opacity: 1;
   }
 }
 

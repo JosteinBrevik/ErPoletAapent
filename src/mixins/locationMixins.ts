@@ -39,9 +39,14 @@ export const timeIsBetween = (
   return currentMinutes > startMinutes && currentMinutes < endMinutes;
 };
 
+const getActualDay = () => {
+  const today = new Date();
+  return (((today.getDay() - 1) % 7) + 7) % 7; // Javascript modulo can't handle negative numbers...
+};
+
 export const getNow = () => {
   const today = new Date();
-  const dayOfTheWeek: number = today.getDay();
+  const dayOfTheWeek: number = getActualDay();
   const time: string = today.getHours() + ":" + today.getMinutes();
   return { currentDay: dayOfTheWeek, currentTime: time };
 };
@@ -52,17 +57,21 @@ export const closingTimeToday = (store: IStore) => {
 };
 
 export const nextOpeningTime = (store: IStore) => {
-  const today = new Date().getDay();
+  const today = getActualDay();
   for (let i = 0; i < 6; i++) {
-    const checkingDay = (i + today) % 7;
+    const checkingDay = (i + today - 1) % 7;
     const openingHours = store.openingHours.regularHours[checkingDay];
     if (openingHours.closed) {
       continue;
     }
+    /* eslint-disable no-console */
+    console.log("day", i, "script", Ukedager[checkingDay]);
+    /* eslint-enable no-console */
+
     const openingTime = timeToMinutes(openingHours.openingTime);
     if (openingTime && openingTime > 0) {
       return (
-        (i === 0 ? "i morgen" : Ukedager[checkingDay]) +
+        (i === 0 ? "i dag" : i === 1 ? "i morgen" : Ukedager[checkingDay]) +
         " " +
         openingHours.openingTime
       );

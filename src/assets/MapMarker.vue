@@ -1,5 +1,5 @@
 <template>
-  <img class="marker" v-bind:src="imageSrc" />
+  <img class="marker" v-bind:src="imageSrc" alt="map marker" />
 </template>
 
 <script>

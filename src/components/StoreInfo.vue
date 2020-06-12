@@ -1,6 +1,7 @@
 <template>
   <div
     v-on:click="toggleAllInfo"
+    v-on:keyup.enter="toggleAllInfo"
     class="storeInfoContainer"
     v-bind:class="{ open: currentStoreIsOpen, closed: !currentStoreIsOpen }"
   >
@@ -24,12 +25,17 @@
       </div>
     </div>
 
-    <div class="mapContainer" v-on:click.stop="goToMap">
+    <div
+      class="mapContainer"
+      v-on:click.stop="goToMap"
+      v-on:keyup.enter="goToMap"
+      tabIndex="0"
+    >
       <MapMarker />
       Åpne i kart
     </div>
 
-    <div v-if="this.showAllInfo">
+    <div v-if="this.showAllInfoInTest">
       <p>Alt: {{ store }}</p>
     </div>
   </div>
@@ -74,8 +80,6 @@ export default {
       const { storeName } = this.$props.store;
       const location = filterStoreName(storeName);
       window.open(
-        // "https://www.google.com/maps/place/" +
-        //   this.$props.store.address.gpsCoord.split(";").join(",")
         "https://www.google.com/maps/search/Vinmonopolet+" + location
       );
     }
@@ -93,6 +97,9 @@ export default {
     storeDisplayName() {
       const store = this.$props.store;
       return filterStoreName(store.storeName);
+    },
+    showAllInfoInTest() {
+      return this.showAllInfo && window.location.href.includes("localhost");
     }
   }
 };

@@ -68,8 +68,11 @@ export default Vue.extend({
     },
     async fetchStores() {
       //console.log("fetching stores");
+      const isInTest = window.location.href.includes("localhost");
+      const storesUrl =
+        (isInTest ? "https://www.erpoletåpent.no" : "") + "/api/stores";
       axios
-        .get("/api/stores")
+        .get(storesUrl)
         .then(response => {
           this.stores = response.data
             .filter(
