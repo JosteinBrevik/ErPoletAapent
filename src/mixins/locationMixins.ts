@@ -58,6 +58,7 @@ export const closingTimeToday = (store: IStore) => {
 
 export const nextOpeningTime = (store: IStore) => {
   const today = getActualDay();
+  const { currentTime } = getNow();
   for (let i = 0; i < 6; i++) {
     const checkingDay = (i + today - 1) % 7;
     const openingHours = store.openingHours.regularHours[checkingDay];
@@ -65,10 +66,20 @@ export const nextOpeningTime = (store: IStore) => {
       continue;
     }
     /* eslint-disable no-console */
-    console.log("day", i, "script", Ukedager[checkingDay]);
+    console.log("day", i, "script", Ukedager[checkingDay], store.openingHours);
     /* eslint-enable no-console */
 
     const openingTime = timeToMinutes(openingHours.openingTime);
+    const closingTime = timeToMinutes(openingHours.closingTime);
+    const currentTimeInMinutes = timeToMinutes(currentTime);
+    console.log(openingTime, closingTime);
+    if (
+      closingTime &&
+      currentTimeInMinutes &&
+      closingTime < currentTimeInMinutes
+    ) {
+      continue;
+    }
     if (openingTime && openingTime > 0) {
       return (
         (i === 0 ? "i dag" : i === 1 ? "i morgen" : Ukedager[checkingDay]) +
