@@ -65,15 +65,17 @@ export const nextOpeningTime = (store: IStore) => {
     if (openingHours.closed) {
       continue;
     }
-    /* eslint-disable no-console */
-    console.log("day", i, "script", Ukedager[checkingDay], store.openingHours);
-    /* eslint-enable no-console */
-
     const openingTime = timeToMinutes(openingHours.openingTime);
     const closingTime = timeToMinutes(openingHours.closingTime);
     const currentTimeInMinutes = timeToMinutes(currentTime);
-    console.log(openingTime, closingTime);
+    const isToday = i === 0;
+    /* eslint-disable no-console */
+    console.log(openingTime, closingTime, currentTimeInMinutes);
+    console.log("day", i, "script", Ukedager[checkingDay], store.openingHours);
+    /* eslint-enable no-console */
+
     if (
+      isToday &&
       closingTime &&
       currentTimeInMinutes &&
       closingTime < currentTimeInMinutes
