@@ -22,7 +22,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "src/tests/StoreManager.test.js"
+    "src/tests/unit/StoreManager.test.js"
   ],
   "exclude": ["node_modules"]
 }
