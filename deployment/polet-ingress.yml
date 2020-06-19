@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    acme.cert-manager.io/http01-edit-in-place: "true"
+  name: polet-ingress
+spec:
+  tls:
+    - hosts:
+        - erpoletåpent.no
+        - www.erpoletåpent.no
+        - xn--erpoletpent-38a.no
+        - www.xn--erpoletpent-38a.no
+      secretName: polet-acme-certificate
+  rules:
+    - host: erpoletåpent.no
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: polet
+              servicePort: 8080
+    - host: www.erpoletåpent.no
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: polet
+              servicePort: 8080
+    - host: xn--erpoletpent-38a.no
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: polet
+              servicePort: 8080
+    - host: www.xn--erpoletpent-38a.no
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: polet
+              servicePort: 8080
