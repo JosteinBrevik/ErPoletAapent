@@ -1,6 +1,6 @@
 // Import `shallowMount` from Vue Test Utils and the component being tested
 import { shallowMount } from "@vue/test-utils";
-import StoreManager from "../components/StoreManager.vue";
+import StoreManager from "../../components/StoreManager.vue";
 
 // Mount the component
 const wrapper = shallowMount(StoreManager);
