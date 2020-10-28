@@ -1,5 +1,6 @@
 <template>
   <div v-if="!loadingCoords && !loadingStores">
+    <PermissionCheck />
     <Answer v-bind:stores="closestStores" />
     <StoreLister
       v-bind:closestStores="closestStores"
@@ -19,6 +20,7 @@ import StoreInfo from "./StoreInfo.vue";
 import Answer from "./Answer.vue";
 import StoreLister from "./StoreLister.vue";
 import Loader from "./Loader.vue";
+import PermissionCheck from "./PermissionCheck.vue";
 import { IStore } from "../types/customTypes";
 import { storeIsOpen } from "../mixins/locationMixins";
 
@@ -27,7 +29,8 @@ export default Vue.extend({
   components: {
     Answer,
     StoreLister,
-    Loader
+    Loader,
+    PermissionCheck
   },
   data() {
     return {
