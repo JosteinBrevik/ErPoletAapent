@@ -1,6 +1,5 @@
 <template>
-  <div v-if="!loadingCoords && !loadingStores">
-    <PermissionCheck />
+  <div v-if="!loadingStores && !loadingCoords">
     <Answer v-bind:stores="closestStores" />
     <StoreLister
       v-bind:closestStores="closestStores"
@@ -29,8 +28,7 @@ export default Vue.extend({
   components: {
     Answer,
     StoreLister,
-    Loader,
-    PermissionCheck
+    Loader
   },
   data() {
     return {
@@ -40,7 +38,8 @@ export default Vue.extend({
       coords: {
         lat: "",
         lng: ""
-      }
+      },
+      location: null as any
     };
   },
   methods: {
@@ -57,16 +56,16 @@ export default Vue.extend({
       return distanceToStore;
     },
     async getCurrentLocation() {
-      //console.log("trying to fetch loc");
+      // console.log("trying to fetch loc");
       try {
         const coordinates = await (this as any).$getLocation({
           enableHighAccuracy: true
         });
         this.coords = coordinates;
-        //console.log("Fetched coords:", coordinates);
+        // console.log("Fetched coords:", coordinates);
         this.loadingCoords = false;
       } catch (error) {
-        //.log("failed", error);
+        // console.log("failed", error);
       }
     },
     async fetchStores() {

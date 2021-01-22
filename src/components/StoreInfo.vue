@@ -35,6 +35,13 @@
       Åpne i kart
     </div>
 
+    <a
+      v-if="this.hasClickedMap"
+      class="sendThanks"
+      href="https://www.paypal.me/josteinbrevik/20nok"
+      >Hjalp det? Send en takk til utviklerne</a
+    >
+
     <div v-if="this.showAllInfoInTest">
       <p>Alt: {{ store }}</p>
     </div>
@@ -57,7 +64,8 @@ export default {
   },
   data() {
     return {
-      showAllInfo: false
+      showAllInfo: false,
+      hasClickedMap: false
     };
   },
   components: {
@@ -77,10 +85,11 @@ export default {
       return distanceString;
     },
     goToMap: function() {
-      const { storeName } = this.$props.store;
-      const location = filterStoreName(storeName);
+      const { address } = this.$props.store;
+      const { street, city } = address;
+      this.hasClickedMap = true;
       window.open(
-        "https://www.google.com/maps/search/Vinmonopolet+" + location
+        `https://www.google.com/maps/search/Vinmonopolet+${street}+${city}`
       );
     }
   },
@@ -105,7 +114,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .storeInfoContainer {
   padding: 1.5rem 1.5rem;
   margin: 3rem auto;
@@ -175,5 +184,12 @@ h3 {
   &:hover {
     box-shadow: 0px 0px 7px rgba(200, 200, 200, 0.5);
   }
+}
+
+.sendThanks {
+  text-align: center;
+  width: 100%;
+  margin-top: 1rem;
+  color: white;
 }
 </style>

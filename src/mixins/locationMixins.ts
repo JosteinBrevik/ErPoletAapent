@@ -10,6 +10,21 @@ enum Ukedager {
   "søndag"
 }
 
+export enum PermissionStatus {
+  GRANTED = "granted",
+  DENIED = "denied",
+  PROMPT = "prompt"
+}
+
+export const hasPermission = async () => {
+  return navigator.permissions
+    .query({ name: "geolocation" })
+    .then(function(result) {
+      // console.log(result, result.state === "granted");
+      return result.state;
+    });
+};
+
 const timeToNumbers = (time: string) => {
   return time.split(":").map(num => Number(num));
 };
@@ -59,8 +74,9 @@ export const closingTimeToday = (store: IStore) => {
 export const nextOpeningTime = (store: IStore) => {
   const today = getActualDay();
   const { currentTime } = getNow();
+  // const currentTime = "17:00";
   for (let i = 0; i < 6; i++) {
-    const checkingDay = (i + today - 1) % 7;
+    const checkingDay = (i + today) % 7;
     const openingHours = store.openingHours.regularHours[checkingDay];
     if (openingHours.closed) {
       continue;

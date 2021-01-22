@@ -1,17 +1,22 @@
 <template>
   <div id="app">
-    <StoreManager />
+    <PermissionCheck>
+      <StoreManager />
+    </PermissionCheck>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import StoreManager from "./components/StoreManager.vue";
+import PermissionCheck from "./components/PermissionCheck.vue";
+import axios from "axios";
 
 export default Vue.extend({
   name: "app",
   components: {
-    StoreManager
+    StoreManager,
+    PermissionCheck
   }
 });
 </script>
@@ -27,7 +32,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #cccccc;
-  min-width: 100vw;
   min-height: 100vh;
   margin: 0 !important;
   background: #222;

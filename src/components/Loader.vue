@@ -25,7 +25,7 @@ export default {
 }
 
 .loader {
-  animation: grow 0.3s forwards, wiggle 2s 1s infinite;
+  animation: grow 0.2s forwards, wiggle 2s 1s infinite;
 }
 
 @keyframes grow {

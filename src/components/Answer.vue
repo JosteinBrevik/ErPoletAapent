@@ -85,7 +85,7 @@ $topPadding: 5vh;
   margin: 0 auto;
 
   @media (max-width: 738px) {
-    width: 80%;
+    width: 90%;
     padding: 0;
     height: 100vh;
   }
