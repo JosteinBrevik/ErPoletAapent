@@ -11,10 +11,12 @@
             ? "Det nærmeste vinmonopolet er åpent, din heldiggris"
             : anotherStoreIsOpen
             ? "Det nærmeste polet er stengt, men andre er åpne. Den nærmeste er denne:"
-            : "Men det nærmeste polet ditt, " +
+            : !isSunday && !noNextOpeningTime
+            ? "Men det nærmeste polet ditt, " +
               getClosestStoreName +
               ", åpner " +
               nextOpeningTimeOfClosestStore
+            : ""
         }}
       </p>
       <div v-if="closestStoreIsOpen || anotherStoreIsOpen">
@@ -53,6 +55,9 @@ export default {
   },
   methods: {},
   computed: {
+    isSunday() {
+      return new Date().getDay() === 0;
+    },
     closestStoreIsOpen() {
       return storeIsOpen(this.$props.stores[0]);
     },
@@ -64,6 +69,9 @@ export default {
     },
     nextOpeningTimeOfClosestStore() {
       return nextOpeningTime(this.$props.stores[0]);
+    },
+    noNextOpeningTime() {
+      return !nextOpeningTime(this.$props.stores[0]);
     },
     getClosestStoreName() {
       return filterStoreName(this.$props.stores[0].storeName);

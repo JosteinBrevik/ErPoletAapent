@@ -73,11 +73,18 @@ export const closingTimeToday = (store: IStore) => {
 
 export const nextOpeningTime = (store: IStore) => {
   const today = getActualDay();
+  const dateObj = new Date();
   const { currentTime } = getNow();
-  // const currentTime = "17:00";
   for (let i = 0; i < 6; i++) {
     const checkingDay = (i + today) % 7;
-    const openingHours = store.openingHours.regularHours[checkingDay];
+    dateObj.setDate(new Date().getDate() + i);
+    const dateString = dateObj.toISOString().substr(0, 10);
+    const exceptionHours = store.openingHours.exceptionHours.find(
+      ex => ex.date === dateString
+    );
+    const openingHours = exceptionHours
+      ? { closed: !exceptionHours.openingTime, ...exceptionHours }
+      : store.openingHours.regularHours[checkingDay];
     if (openingHours.closed) {
       continue;
     }
@@ -102,7 +109,7 @@ export const nextOpeningTime = (store: IStore) => {
       );
     }
   }
-  return store.openingHours.regularHours[today];
+  return null;
 };
 
 export const storeIsOpen = (store: IStore) => {
