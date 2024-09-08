@@ -1,5 +1,6 @@
 // Import `shallowMount` from Vue Test Utils and the component being tested
 import { shallowMount } from "@vue/test-utils";
+import { describe, it, expect } from "vitest";
 import StoreManager from "../../components/StoreManager.vue";
 
 // Mount the component

@@ -1,4 +1,4 @@
-import { IStore } from "../types/customTypes";
+import {type  IStore } from "../types/customTypes";
 
 enum Ukedager {
   "mandag",

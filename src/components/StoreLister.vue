@@ -52,7 +52,7 @@
 <script lang="ts">
 import Vue from "vue";
 import StoreInfo from "./StoreInfo.vue";
-import { IStore } from "../types/customTypes";
+import { type IStore } from "../types/customTypes";
 
 export default Vue.extend({
   name: "StoreLister",
