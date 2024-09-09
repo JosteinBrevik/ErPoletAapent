@@ -30,8 +30,8 @@
   </div>
 </template>
 
-<script>
-import { IStore } from "../types/customTypes";
+<script lang="ts">
+import type { IStore } from "../types/customTypes";
 import {
   storeIsOpen,
   nextOpeningTime,
@@ -41,9 +41,7 @@ import StoreInfo from "./StoreInfo.vue";
 import ScrollBar from "./ScrollBar.vue";
 
 export default {
-  props: {
-    stores: IStore
-  },
+  props: ['store'],
   components: {
     ScrollBar,
     StoreInfo

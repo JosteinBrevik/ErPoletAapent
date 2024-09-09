@@ -29,7 +29,7 @@
   </fragment>
 </template>
 
-<script>
+<script lang="ts">
 import { hasPermission, PermissionStatus } from "../mixins/locationMixins";
 import { Fragment } from "vue-fragment";
 export default {

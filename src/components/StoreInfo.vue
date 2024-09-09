@@ -48,8 +48,8 @@
   </div>
 </template>
 
-<script>
-import { IStore } from "../types/customTypes";
+<script lang="ts">
+import type { IStore } from "../types/customTypes";
 import {
   storeIsOpen,
   closingTimeToday,
@@ -59,9 +59,7 @@ import {
 import MapMarker from "../assets/MapMarker.vue";
 
 export default {
-  props: {
-    store: IStore
-  },
+  props: ['store'],
   data() {
     return {
       showAllInfo: false,

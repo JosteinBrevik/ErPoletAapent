@@ -6,8 +6,9 @@ server {
 
     location / {}
     location /api/stores {
+            proxy_ssl_server_name on;
             proxy_set_header "Ocp-Apim-Subscription-Key" ${ER_POLET_AAPENT_API_KEY};
-            proxy_pass https://apis.vinmonopolet.no/stores/v0/details;
+            proxy_pass https://apis01.vinmonopolet.no/stores/v0/details;
     }
 
     listen 8080;
