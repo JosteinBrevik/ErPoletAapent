@@ -41,7 +41,7 @@ import StoreInfo from "./StoreInfo.vue";
 import ScrollBar from "./ScrollBar.vue";
 
 export default {
-  props: ['store'],
+  props: ['stores'],
   components: {
     ScrollBar,
     StoreInfo
