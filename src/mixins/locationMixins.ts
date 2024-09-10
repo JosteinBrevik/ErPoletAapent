@@ -10,24 +10,11 @@ enum Ukedager {
   "søndag"
 }
 
-export enum PermissionStatus {
+export enum Permission {
   GRANTED = "granted",
   DENIED = "denied",
   PROMPT = "prompt"
 }
-
-export const hasPermission = async () => {
-  return navigator.permissions
-    .query({ name: "geolocation" })
-    .then(function(result) {
-      // console.log(result, result.state === "granted");
-      return result.state;
-    });
-};
-
-const timeToNumbers = (time: string) => {
-  return time.split(":").map(num => Number(num));
-};
 
 const timeToMinutes = (time: string) => {
   if (!time) {

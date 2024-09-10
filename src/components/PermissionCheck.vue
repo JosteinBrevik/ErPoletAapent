@@ -1,9 +1,9 @@
 <template>
   <fragment>
-    <div v-if="permissionGranted">
-      <slot />
+    <div v-if="currentPermission === Permission.GRANTED">
+      <StoreManager :coordinates="coordinates" /> />
     </div>
-    <div v-else v-show="this.permissionStatus !== false" class="container">
+    <div v-else class="container">
       <div class="storeInfoContainer permissionBox">
         <p class="infoText">
           Siden hvert Vinmonopol har ulike åpningstider, trenger vi å vite hvor
@@ -13,7 +13,7 @@
         <button v-on:click="askForPermission" class="grantPermissionBtn">
           Den er grei
         </button>
-        <p v-if="permissionDenied" class="disclaimer">
+        <p v-if="currentPermission === Permission.DENIED" class="disclaimer">
           Det ser ut til at du har blokkert denne siden fra å finne posisjonen
           din. Du må endre dette i innstillingene til mobilen eller nettleseren
           for å kunne bruke siden.
@@ -30,58 +30,40 @@
 </template>
 
 <script lang="ts">
-import { hasPermission, PermissionStatus } from "../mixins/locationMixins";
+import { Permission } from "../mixins/locationMixins";
+import StoreManager from "./StoreManager.vue";
 import { Fragment } from "vue-fragment";
+
 export default {
   name: "PermissionCheck",
   components: {
-    Fragment
+    Fragment,
+    StoreManager
   },
   data() {
     return {
-      permissionStatus: false,
-      intervalNumber: null
+      Permission: Permission,
+      currentPermission: Permission.PROMPT,
+      coordinates: null,
+      timeoutHandle: undefined
     };
   },
   methods: {
     async askForPermission() {
+      clearTimeout(this.timeoutHandle);
       try {
-        await this.$getLocation({
+        this.coordinates = await this.$getLocation({
           enableHighAccuracy: true
-        }).then(coordinates => {
-          this.permissionStatus = PermissionStatus.GRANTED;
-        });
+        })
+        this.currentPermission = Permission.GRANTED;
       } catch (error) {
-        // console.log("failed", error);
+        this.currentPermission = Permission.DENIED;
+        this.timeoutHandle = setTimeout(() => {
+          this.askForPermission();
+        }, 1000);
       }
     },
-    removeInterval() {
-      clearInterval(this.intervalNumber);
-    },
-    checkPermission() {
-      this.intervalNumber = setInterval(async () => {
-        const perm = await hasPermission();
-        if (perm === PermissionStatus.GRANTED) {
-          this.removeInterval();
-        }
-        this.permissionStatus = perm;
-      }, 1000);
-    }
   },
-  computed: {
-    permissionDenied: function() {
-      return this.permissionStatus === PermissionStatus.DENIED;
-    },
-    permissionGranted: function() {
-      return this.permissionStatus === PermissionStatus.GRANTED;
-    },
-    permissionPrompted: function() {
-      return this.permissionStatus === PermissionStatus.PROMPT;
-    }
-  },
-  created() {
-    this.checkPermission();
-  }
 };
 </script>
 
@@ -95,6 +77,7 @@ export default {
   color: #eee;
   border-color: #555;
   border-style: none;
+  cursor: pointer;
 }
 
 .infoText {
