@@ -1,21 +1,17 @@
 <template>
   <div id="app">
-    <PermissionCheck>
-      <StoreManager />
-    </PermissionCheck>
+    <PermissionCheck />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import StoreManager from "./components/StoreManager.vue";
+
 import PermissionCheck from "./components/PermissionCheck.vue";
-import axios from "axios";
 
 export default Vue.extend({
   name: "app",
   components: {
-    StoreManager,
     PermissionCheck
   }
 });

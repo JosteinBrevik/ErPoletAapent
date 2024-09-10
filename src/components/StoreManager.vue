@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loadingStores && !loadingCoords">
+  <div v-if="!loadingStores">
     <Answer v-bind:stores="closestStores" />
     <StoreLister
       v-bind:closestStores="closestStores"
@@ -12,19 +12,18 @@
 </template>
 
 <script lang="ts">
-import Vue, { VNode } from "vue";
+import Vue from "vue";
 import axios from "axios";
 import { getDistance } from "geolib";
-import StoreInfo from "./StoreInfo.vue";
 import Answer from "./Answer.vue";
 import StoreLister from "./StoreLister.vue";
 import Loader from "./Loader.vue";
-import PermissionCheck from "./PermissionCheck.vue";
 import { type IStore } from "../types/customTypes";
 import { storeIsOpen } from "../mixins/locationMixins";
 
 export default Vue.extend({
   name: "StoreManager",
+  props: ["coordinates"],
   components: {
     Answer,
     StoreLister,
@@ -33,13 +32,11 @@ export default Vue.extend({
   data() {
     return {
       stores: [] as IStore[] | null,
-      loadingCoords: true,
       loadingStores: true,
       coords: {
         lat: "",
         lng: ""
       },
-      location: null as any
     };
   },
   methods: {
@@ -49,24 +46,11 @@ export default Vue.extend({
         .map(num => parseFloat(num));
       const storePos = { latitude: storeLat, longitude: storeLong };
       const currentPos = {
-        latitude: this.coords.lat,
-        longitude: this.coords.lng
+        latitude: this.$props.coordinates.lat,
+        longitude: this.$props.coordinates.lng
       }; // Lunner: { latitude: "60.267963", longitude: "10.566183" } Current: { latitude: this.coords.lat, longitude: this.coords.long }
       const distanceToStore = getDistance(storePos, currentPos);
       return distanceToStore;
-    },
-    async getCurrentLocation() {
-      // console.log("trying to fetch loc");
-      try {
-        const coordinates = await (this as any).$getLocation({
-          enableHighAccuracy: true
-        });
-        this.coords = coordinates;
-        // console.log("Fetched coords:", coordinates);
-        this.loadingCoords = false;
-      } catch (error) {
-        // console.log("failed", error);
-      }
     },
     async fetchStores() {
       //console.log("fetching stores");
@@ -123,12 +107,8 @@ export default Vue.extend({
     }
   },
   beforeMount() {
-    this.getCurrentLocation();
     this.fetchStores();
   },
-  mounted() {
-    //console.log("StoreManager mounted. Props:", this.$props);
-  }
 });
 </script>
 
