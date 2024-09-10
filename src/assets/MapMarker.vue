@@ -2,12 +2,13 @@
   <img class="marker" v-bind:src="imageSrc" alt="map marker" />
 </template>
 
-<script>
+<script lang="ts">
+import marker from "@/assets/marker.svg"
 export default {
   name: "MapMarker",
   data() {
     return {
-      imageSrc: require("@/assets/marker.svg")
+      imageSrc: marker
     };
   }
 };
