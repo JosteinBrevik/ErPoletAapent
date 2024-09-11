@@ -1,7 +1,10 @@
 <template>
   <fragment>
-    <div v-if="currentPermission === Permission.GRANTED">
-      <StoreManager :coordinates="coordinates" /> />
+    <div v-if="currentPermission === Permission.PENDING">
+      <Loader />
+    </div>
+    <div v-else-if="currentPermission === Permission.GRANTED">
+      <StoreManager :stores="stores" :coordinates="coordinates" />
     </div>
     <div v-else class="container">
       <div class="storeInfoContainer permissionBox">
@@ -10,10 +13,13 @@
           du er for å gi deg riktig informasjon. Denne dataen blir ikke lagret
           eller sendt til noen andre.
         </p>
-        <button v-on:click="askForPermission" class="grantPermissionBtn">
+        <button
+          v-on:click="askForPermission"
+          :disabled="currentPermission === Permission.PENDING || currentPermission === Permission.DENIED"
+          class="grantPermissionBtn">
           Den er grei
         </button>
-        <p v-if="currentPermission === Permission.DENIED" class="disclaimer">
+        <p v-if="currentPermission === Permission.DENIED" class="warning">
           Det ser ut til at du har blokkert denne siden fra å finne posisjonen
           din. Du må endre dette i innstillingene til mobilen eller nettleseren
           for å kunne bruke siden.
@@ -33,36 +39,53 @@
 import { Permission } from "../mixins/locationMixins";
 import StoreManager from "./StoreManager.vue";
 import { Fragment } from "vue-fragment";
+import axios from "axios";
+import Loader from "./Loader.vue";
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export default {
   name: "PermissionCheck",
   components: {
     Fragment,
-    StoreManager
+    StoreManager,
+    Loader
   },
   data() {
     return {
       Permission: Permission,
       currentPermission: Permission.PROMPT,
       coordinates: null,
-      timeoutHandle: undefined
+      timeoutHandle: undefined,
+      stores: null,
     };
   },
   methods: {
     async askForPermission() {
       clearTimeout(this.timeoutHandle);
       try {
-        this.coordinates = await this.$getLocation({
+        const locationPromise = this.$getLocation({
           enableHighAccuracy: true
         })
-        this.currentPermission = Permission.GRANTED;
+        this.currentPermission = Permission.PENDING;
+        this.coordinates = await locationPromise;
       } catch (error) {
         this.currentPermission = Permission.DENIED;
-        this.timeoutHandle = setTimeout(() => {
-          this.askForPermission();
-        }, 1000);
+        return;
       }
+      this.stores = await this.fetchStores()
+      this.currentPermission = Permission.GRANTED;
     },
+    async fetchStores() {
+      const isInTest = window.location.href.includes("localhost");
+      const storesUrl =
+        (isInTest ? "https://www.erpoletåpent.no" : "") + "/api/stores";
+      const response = await axios.get(storesUrl)
+
+      return response.data
+        .filter((store: IStore) => store.status === "Open")
+        .slice(10);
+    }
   },
 };
 </script>
@@ -99,6 +122,11 @@ export default {
 .container {
   display: flex;
   height: 100vh;
+}
+
+.warning {
+  color: red;
+  font-size: 0.9rem;
 }
 
 .disclaimer {

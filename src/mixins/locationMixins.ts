@@ -13,6 +13,7 @@ enum Ukedager {
 export enum Permission {
   GRANTED = "granted",
   DENIED = "denied",
+  PENDING = "pending",
   PROMPT = "prompt"
 }
 

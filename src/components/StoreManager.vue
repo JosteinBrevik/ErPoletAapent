@@ -1,19 +1,15 @@
 <template>
-  <div v-if="!loadingStores">
+  <div>
     <Answer v-bind:stores="closestStores" />
     <StoreLister
       v-bind:closestStores="closestStores"
       v-bind:closestOpenStores="closestOpenStores"
     />
   </div>
-  <div v-else>
-    <Loader />
-  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import axios from "axios";
 import { getDistance } from "geolib";
 import Answer from "./Answer.vue";
 import StoreLister from "./StoreLister.vue";
@@ -23,7 +19,7 @@ import { storeIsOpen } from "../mixins/locationMixins";
 
 export default Vue.extend({
   name: "StoreManager",
-  props: ["coordinates"],
+  props: ["coordinates", "stores"],
   components: {
     Answer,
     StoreLister,
@@ -31,8 +27,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      stores: [] as IStore[] | null,
-      loadingStores: true,
       coords: {
         lat: "",
         lng: ""
@@ -52,40 +46,15 @@ export default Vue.extend({
       const distanceToStore = getDistance(storePos, currentPos);
       return distanceToStore;
     },
-    async fetchStores() {
-      //console.log("fetching stores");
-      const isInTest = window.location.href.includes("localhost");
-      const storesUrl =
-        (isInTest ? "https://www.erpoletåpent.no" : "") + "/api/stores";
-      axios
-        .get(storesUrl)
-        .then(response => {
-          this.stores = response.data
-            .filter(
-              (store: IStore) => store.status === "Open" // Filter out stores that are temporarily or permanently shut down
-            )
-            .slice(10);
-          //console.log("Fetched stores", response);
-          this.loadingStores = false;
-        })
-        .catch(error => {
-          //console.log("ERRRR", error);
-        });
-    }
+
   },
   computed: {
     storesWithDist(): IStore[] {
-      if (this.stores === null) {
-        return [];
-      }
-      return this.stores.map(store => {
+      return this.$props.stores.map(store => {
         return { ...store, distanceFromUser: this.calculateDistance(store) };
       });
     },
     openStores(): IStore[] {
-      if (!this.stores) {
-        return [];
-      }
       return this.storesWithDist.slice().filter(store => storeIsOpen(store));
     },
     closestStores(): IStore[] {
@@ -105,9 +74,6 @@ export default Vue.extend({
       });
       return closestStores;
     }
-  },
-  beforeMount() {
-    this.fetchStores();
   },
 });
 </script>
